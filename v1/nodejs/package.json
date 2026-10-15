@@ -1,0 +1,17 @@
+{
+  "name": "gradescript-api-examples-nodejs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GradeScript Grading API examples for Node.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "grade": "node grade.mjs",
+    "wait": "node wait.mjs",
+    "list": "node list.mjs",
+    "get": "node get.mjs",
+    "retry": "node retry.mjs",
+    "delete": "node delete.mjs"
+  }
+}
