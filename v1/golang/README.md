@@ -6,7 +6,8 @@ library.
 ## Requirements
 
 - Go 1.21 or later
-- `GRADESCRIPT_API_KEY` set to your API key (see the [main README](../../README.md#before-you-start))
+- `GRADESCRIPT_API_KEY` in the `.env` file at the repo root (see the
+  [main README](../../README.md#before-you-start))
 
 ## Usage
 

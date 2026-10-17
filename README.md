@@ -15,14 +15,30 @@ and feedback. It also lists, fetches, retries and deletes gradings, so every end
 2. **Check your token balance.** Gradings are paid from the key owner's balance, and creating or
    retrying a grading needs at least 100 tokens. An API grading costs more tokens than the same
    grading in the web app. Top up in the console under **Settings → Billing**.
-3. **Export the key:**
+3. **Add the key to `.env`.** Copy [`.env.example`](.env.example) to `.env` in the repo root:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then set your key in it:
+
+   ```dotenv
+   GRADESCRIPT_API_KEY=gsk_...
+   ```
+
+   The Node.js, Python and Go examples read this file from whichever folder you run them in. A
+   variable you export in your shell takes precedence over `.env`. The cURL scripts don't read
+   `.env`, so export the key for them:
 
    ```bash
    export GRADESCRIPT_API_KEY="gsk_..."
    ```
 
 Keep the key on your server. Don't put it in frontend code: the API doesn't accept browser
-requests from other sites anyway.
+requests from other sites anyway. `.env` is ignored by git, so the key isn't committed.
+
+These settings can go in `.env` or the environment:
 
 | Variable              | Required | Default                                   |
 | --------------------- | -------- | ----------------------------------------- |
@@ -38,7 +54,7 @@ With no arguments, `grade` uses the sample script in
 # cURL (needs curl and jq)
 cd v1/curl && ./grade.sh
 
-# Node.js 20 or later (no dependencies)
+# Node.js 20.12 or later (no dependencies)
 cd v1/nodejs && node grade.mjs
 
 # Python 3.8 or later
@@ -122,6 +138,7 @@ print them as `HTTP 401 UNAUTHORIZED: Invalid API key!`.
 
 ```text
 .
+├── .env.example                      copy to .env and add your API key
 ├── sample-script/
 │   └── Item-one-answer-script.jpeg   a sample handwritten answer script
 └── v1/                               examples for /client/v1

@@ -1,12 +1,13 @@
 # Node.js examples
 
 ES modules that call the GradeScript Grading API with the built-in `fetch`, `FormData` and
-`openAsBlob`. There's nothing to install.
+`openAsBlob`, and read the `.env` file with `process.loadEnvFile`. There's nothing to install.
 
 ## Requirements
 
-- Node.js 20 or later
-- `GRADESCRIPT_API_KEY` set to your API key (see the [main README](../../README.md#before-you-start))
+- Node.js 20.12 or later
+- `GRADESCRIPT_API_KEY` in the `.env` file at the repo root (see the
+  [main README](../../README.md#before-you-start))
 
 ## Usage
 

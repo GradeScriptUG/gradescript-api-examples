@@ -10,12 +10,15 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"text/tabwriter"
 	"time"
 )
@@ -41,6 +44,12 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, usage)
 		os.Exit(2)
+	}
+
+	// Read GRADESCRIPT_API_KEY (and GRADESCRIPT_API_URL) from the .env file at the repo root.
+	if err := loadEnvFile(filepath.Join(repoRoot(), ".env")); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	client, err := NewClientFromEnv()
@@ -80,10 +89,47 @@ func withID(args []string, command string, run func(id string) error) error {
 	return run(args[0])
 }
 
-// sampleScript is the repo's sample answer script, found relative to this source file.
-func sampleScript() string {
+// repoRoot is the root of this repo, found relative to this source file.
+func repoRoot() string {
 	_, file, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(file), "..", "..", "sample-script", "Item-one-answer-script.jpeg")
+	return filepath.Join(filepath.Dir(file), "..", "..")
+}
+
+// sampleScript is the repo's sample answer script.
+func sampleScript() string {
+	return filepath.Join(repoRoot(), "sample-script", "Item-one-answer-script.jpeg")
+}
+
+// loadEnvFile sets environment variables from a .env file of NAME=value lines.
+// Variables already set in the environment take precedence, and a missing file
+// is fine.
+func loadEnvFile(path string) error {
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		name, value, ok := strings.Cut(strings.TrimPrefix(line, "export "), "=")
+		if !ok {
+			continue
+		}
+		name, value = strings.TrimSpace(name), strings.TrimSpace(value)
+		if len(value) >= 2 && (value[0] == '"' || value[0] == '\'') && value[len(value)-1] == value[0] {
+			value = value[1 : len(value)-1]
+		}
+		if _, set := os.LookupEnv(name); !set {
+			os.Setenv(name, value)
+		}
+	}
+	return nil
 }
 
 func grade(client *Client, files []string) error {

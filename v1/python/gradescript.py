@@ -1,12 +1,17 @@
 """A small client for the GradeScript Grading API: https://console.gradescriptug.com/docs
 
-Python 3.8 or later with requests (pip install -r requirements.txt).
+Python 3.8 or later with requests and python-dotenv (pip install -r requirements.txt).
 """
 import os
 import sys
 import time
 
 import requests
+from dotenv import load_dotenv
+
+# Read GRADESCRIPT_API_KEY (and GRADESCRIPT_API_URL) from the .env file at the repo root.
+# Variables already set in the environment take precedence.
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".env"))
 
 API_URL = (
     os.environ.get("GRADESCRIPT_API_URL") or "https://api.gradescriptug.com/client/v1"
@@ -33,7 +38,9 @@ class GradeScriptError(Exception):
 def _request(method, path, **kwargs):
     api_key = os.environ.get("GRADESCRIPT_API_KEY")
     if not api_key:
-        raise RuntimeError("Set GRADESCRIPT_API_KEY to your API key (gsk_...).")
+        raise RuntimeError(
+            "Set GRADESCRIPT_API_KEY in the .env file at the repo root (see .env.example)."
+        )
 
     delays = GET_RETRY_DELAYS if method == "GET" else ()
     for attempt in range(len(delays) + 1):

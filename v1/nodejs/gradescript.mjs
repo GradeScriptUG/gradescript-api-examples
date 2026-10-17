@@ -1,7 +1,16 @@
 // A small client for the GradeScript Grading API: https://console.gradescriptug.com/docs
-// Node.js 20 or later, no dependencies (built-in fetch, FormData and openAsBlob).
+// Node.js 20.12 or later, no dependencies (built-in fetch, FormData, openAsBlob and
+// process.loadEnvFile).
 import { openAsBlob } from 'node:fs'
 import { basename } from 'node:path'
+
+// Read GRADESCRIPT_API_KEY (and GRADESCRIPT_API_URL) from the .env file at the repo root.
+// Variables already set in the environment take precedence.
+try {
+  process.loadEnvFile(new URL('../../.env', import.meta.url))
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error
+}
 
 const API_URL = (
   process.env.GRADESCRIPT_API_URL || 'https://api.gradescriptug.com/client/v1'
@@ -28,7 +37,9 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function request(method, path, { query = {}, body } = {}) {
   const apiKey = process.env.GRADESCRIPT_API_KEY
-  if (!apiKey) throw new Error('Set GRADESCRIPT_API_KEY to your API key (gsk_...).')
+  if (!apiKey) {
+    throw new Error('Set GRADESCRIPT_API_KEY in the .env file at the repo root (see .env.example).')
+  }
 
   const url = new URL(API_URL + path)
   for (const [name, value] of Object.entries(query)) {

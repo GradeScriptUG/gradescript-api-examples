@@ -1,11 +1,13 @@
 # Python examples
 
-Scripts that call the GradeScript Grading API with [`requests`](https://requests.readthedocs.io/).
+Scripts that call the GradeScript Grading API with [`requests`](https://requests.readthedocs.io/),
+and read the `.env` file with [`python-dotenv`](https://pypi.org/project/python-dotenv/).
 
 ## Requirements
 
 - Python 3.8 or later
-- `GRADESCRIPT_API_KEY` set to your API key (see the [main README](../../README.md#before-you-start))
+- `GRADESCRIPT_API_KEY` in the `.env` file at the repo root (see the
+  [main README](../../README.md#before-you-start))
 
 ```bash
 python -m venv .venv && source .venv/bin/activate

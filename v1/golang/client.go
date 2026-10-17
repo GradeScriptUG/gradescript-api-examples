@@ -35,7 +35,7 @@ type Client struct {
 func NewClientFromEnv() (*Client, error) {
 	apiKey := os.Getenv("GRADESCRIPT_API_KEY")
 	if apiKey == "" {
-		return nil, errors.New("set GRADESCRIPT_API_KEY to your API key (gsk_...)")
+		return nil, errors.New("set GRADESCRIPT_API_KEY in the .env file at the repo root (see .env.example)")
 	}
 	apiURL := os.Getenv("GRADESCRIPT_API_URL")
 	if apiURL == "" {
